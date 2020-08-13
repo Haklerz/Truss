@@ -1,72 +1,60 @@
 package com.haklerz.truss;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Runner {
+public class Runner extends JPanel implements Runnable {
+    private static final long serialVersionUID = 7696523570424558811L;
 
     private final Game game;
-    private Canvas canvas;
 
     public Runner(Game game) {
         this.game = game;
     }
 
+    @Override
     public void run() {
         initialize();
 
+        long startTime = System.nanoTime();
+        long previousTime = startTime;
+
         while (true) {
-            game.update(0);
-
-            render();
-        }
-    }
-
-    private void render() {
-        BufferStrategy bs = canvas.getBufferStrategy();
-
-        if (bs == null) {
-            canvas.createBufferStrategy(2);
-            canvas.requestFocus();
-        } 
-        else {
-            Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-
-            g.setBackground(Color.BLACK);
-            game.draw(g);
-
-            g.dispose();
-            bs.show();
+            long currentTime = System.nanoTime();
+            game.update((currentTime - previousTime) * 1e-9);
+            repaint();
+            previousTime = currentTime;
         }
     }
 
     private void initialize() {
         Settings settings = new Settings();
-        settings.setResolution(640, 360);
-        settings.setTitle("Truss");
-
         game.setup(settings);
 
-        canvas = new Canvas();
-        Dimension size = new Dimension(settings.getWidth(), settings.getHeight());
-        canvas.setMaximumSize(size);
-        canvas.setMinimumSize(size);
-        canvas.setPreferredSize(size);
+        setBackground(Color.BLACK);
+        setPreferredSize(new Dimension(settings.getWidth(), settings.getHeight()));
 
         JFrame frame = new JFrame(settings.getTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.add(canvas, BorderLayout.CENTER);
-        frame.pack();
-        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
+        frame.setResizable(false);
+
+        frame.add(this, BorderLayout.CENTER);
+        frame.pack();
 
         frame.setVisible(true);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        game.draw((Graphics2D) g);
     }
 }
