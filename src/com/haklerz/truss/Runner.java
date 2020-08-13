@@ -2,6 +2,7 @@ package com.haklerz.truss;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
@@ -24,30 +25,24 @@ public class Runner {
             game.update(0);
 
             render();
-
-            try {
-                Thread.sleep(17);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
     }
 
     private void render() {
         BufferStrategy bs = canvas.getBufferStrategy();
 
-        if (bs != null) {
+        if (bs == null) {
+            canvas.createBufferStrategy(2);
+            canvas.requestFocus();
+        } 
+        else {
             Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
+            g.setBackground(Color.BLACK);
             game.draw(g);
 
             g.dispose();
             bs.show();
-        }
-        else {
-            canvas.createBufferStrategy(3);
-            canvas.requestFocus();
         }
     }
 
