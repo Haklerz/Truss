@@ -42,9 +42,9 @@ public class Runner implements Runnable {
         canvas.createBufferStrategy(2);
         BufferStrategy buffer = canvas.getBufferStrategy();
 
-        GraphicsConfiguration graphicsConfig = GraphicsEnvironment.getLocalGraphicsEnvironment()
+        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice().getDefaultConfiguration();
-        BufferedImage backBuffer = graphicsConfig.createCompatibleImage(settings.getWidth(), settings.getHeight());
+        BufferedImage backBuffer = graphicsConfiguration.createCompatibleImage(settings.getWidth(), settings.getHeight());
 
         Graphics2D graphics = backBuffer.createGraphics();
         graphics.setColor(Color.BLACK);
