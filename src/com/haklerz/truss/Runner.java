@@ -1,60 +1,69 @@
 package com.haklerz.truss;
 
-import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-public class Runner extends JPanel implements Runnable {
-    private static final long serialVersionUID = 7696523570424558811L;
+public class Runner implements Runnable {
 
     private final Game game;
+    private final Settings settings;
+    private final Canvas canvas;
+    private final JFrame frame;
 
     public Runner(Game game) {
         this.game = game;
-    }
 
-    @Override
-    public void run() {
-        initialize();
-
-        long startTime = System.nanoTime();
-        long previousTime = startTime;
-
-        while (true) {
-            long currentTime = System.nanoTime();
-            game.update((currentTime - previousTime) * 1e-9);
-            repaint();
-            previousTime = currentTime;
-        }
-    }
-
-    private void initialize() {
-        Settings settings = new Settings();
+        this.settings = new Settings();
         game.setup(settings);
 
-        setBackground(Color.BLACK);
-        setPreferredSize(new Dimension(settings.getWidth(), settings.getHeight()));
+        this.canvas = new Canvas();
+        canvas.setIgnoreRepaint(true);
+        canvas.setSize(settings.getWidth(), settings.getHeight());
 
-        JFrame frame = new JFrame(settings.getTitle());
+        this.frame = new JFrame(settings.getTitle());
+        frame.setIgnoreRepaint(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setLayout(new BorderLayout());
         frame.setResizable(false);
-
-        frame.add(this, BorderLayout.CENTER);
+        frame.add(canvas);
         frame.pack();
-
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        game.draw((Graphics2D) g);
+    public void run() {
+        canvas.createBufferStrategy(2);
+        BufferStrategy buffer = canvas.getBufferStrategy();
+
+        GraphicsConfiguration graphicsConfig = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice().getDefaultConfiguration();
+        BufferedImage backBuffer = graphicsConfig.createCompatibleImage(settings.getWidth(), settings.getHeight());
+
+        Graphics2D graphics = backBuffer.createGraphics();
+        graphics.setColor(Color.BLACK);
+        graphics.fillRect(0, 0, settings.getWidth(), settings.getHeight());
+        graphics.dispose();
+        
+        while (true) {
+            game.update(0);
+
+            graphics = backBuffer.createGraphics();
+            game.draw(graphics);
+            graphics.dispose();
+
+            graphics = (Graphics2D) buffer.getDrawGraphics();
+            graphics.drawImage(backBuffer, 0, 0, null);
+            graphics.dispose();
+
+            buffer.show();
+            Thread.yield();
+        }
     }
 }
