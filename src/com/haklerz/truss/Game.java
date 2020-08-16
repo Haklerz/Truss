@@ -1,7 +1,5 @@
 package com.haklerz.truss;
 
-import java.awt.Graphics2D;
-
 /**
  * Interface which all Truss games must implement.
  */
@@ -15,13 +13,13 @@ public interface Game {
 
     /**
      * Called once every frame before draw.
-     * @param dt
+     * @param time
      */
-    public abstract void update(double dt);
+    public abstract void update(Time time);
 
     /**
      * Called once every frame after update.
-     * @param g
+     * @param renderer
      */
-    public abstract void draw(Graphics2D g);
+    public abstract void draw(Renderer renderer);
 }

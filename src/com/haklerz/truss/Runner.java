@@ -51,11 +51,16 @@ public class Runner implements Runnable {
         graphics.fillRect(0, 0, settings.getWidth(), settings.getHeight());
         graphics.dispose();
         
+        Time time = new Time(System.nanoTime());
+        Renderer renderer = new Renderer();
+
         while (true) {
-            game.update(0);
+            time.update(System.nanoTime());
+            game.update(time);
 
             graphics = backBuffer.createGraphics();
-            game.draw(graphics);
+            renderer.setGraphics(graphics);
+            game.draw(renderer);
             graphics.dispose();
 
             graphics = (Graphics2D) buffer.getDrawGraphics();
