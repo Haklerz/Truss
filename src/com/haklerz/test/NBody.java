@@ -22,7 +22,7 @@ public class NBody implements Game {
         rng = new Random();
         bodies = new ArrayList<>();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             bodies.add(new Body(rng.nextDouble() * 1280, rng.nextDouble() * 720));
         }
     }
@@ -49,6 +49,7 @@ public class NBody implements Game {
         }
 
         bodies.forEach(body -> body.update(time));
+        System.out.println("FPS: " + time.getFramerate());
     }
 
     @Override
