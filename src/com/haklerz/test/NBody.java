@@ -17,13 +17,13 @@ public class NBody implements Game {
     @Override
     public void setup(Settings settings) {
         settings.setTitle("NBody Simulation");
-        settings.setResolution(640, 360);
+        settings.setResolution(1280, 720);
 
         rng = new Random();
         bodies = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
-            bodies.add(new Body(rng.nextDouble() * 640, rng.nextDouble() * 360));
+        for (int i = 0; i < 1000; i++) {
+            bodies.add(new Body(rng.nextDouble() * 1280, rng.nextDouble() * 720));
         }
     }
 
@@ -38,29 +38,22 @@ public class NBody implements Game {
                 Vec ab = Vec.sub(b.pos, a.pos);
                 double d = ab.mag() * 0.05;
 
-                ab.div(d * d * d);
+                if (d > 0.5) {
+                    ab.div(d * d * d);
+                    ab.mul(0.5);
 
-                double rep = Math.sin(0.5 * time.getElapsed()) + 2;
-                // System.out.println(rep);
-                if (d < rep) {
-                    ab.mul(-1);
+                    a.acc(time, ab);
+                    b.acc(time, ab.mul(-1));
                 }
-
-                a.acc(time, ab);
-                b.acc(time, ab.mul(-1));
             }
         }
 
-        for (Body body : bodies) {
-            body.update(time);
-        }
+        bodies.forEach(body -> body.update(time));
     }
 
     @Override
     public void draw(Renderer renderer) {
         renderer.clear();
-        for (Body body : bodies) {
-            body.draw(renderer);
-        }
+        bodies.forEach(body -> body.draw(renderer));
     }
 }

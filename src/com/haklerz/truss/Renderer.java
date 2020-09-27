@@ -29,7 +29,7 @@ public class Renderer {
 
     public void clear() {
         graphics.setColor(Color.BLACK);
-        graphics.fillRect(0, 0, 640, 360);
+        graphics.fillRect(0, 0, 1280, 720);
     }
 
     private static int round(double x) {
