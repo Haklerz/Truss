@@ -13,14 +13,14 @@ import javax.swing.JFrame;
 public class Runner implements Runnable {
 
     private final Game game;
-    private final Settings settings;
+    private final Config settings;
     private final Canvas canvas;
     private final JFrame frame;
 
     public Runner(Game game) {
         this.game = game;
 
-        this.settings = new Settings();
+        this.settings = new Config();
         game.setup(settings);
 
         this.canvas = new Canvas();
@@ -56,11 +56,11 @@ public class Runner implements Runnable {
 
         while (true) {
             time.update(System.nanoTime());
-            game.update(time);
+            game.update(settings, time);
 
             graphics = backBuffer.createGraphics();
             renderer.setGraphics(graphics);
-            game.draw(renderer);
+            game.draw(settings, renderer);
             graphics.dispose();
 
             graphics = (Graphics2D) buffer.getDrawGraphics();

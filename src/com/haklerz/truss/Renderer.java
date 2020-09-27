@@ -27,13 +27,7 @@ public class Renderer {
         graphics.drawLine(round(x0), round(y0), round(x1), round(y1));
     }
 
-    public void clear() {
-        graphics.setColor(Color.BLACK);
-        graphics.fillRect(0, 0, 1280, 720);
-    }
-
     private static int round(double x) {
         return (x >= 0) ? (int) (x + 0.5) : (int) (x - 0.5);
     }
-
 }
