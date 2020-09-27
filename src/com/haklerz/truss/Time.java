@@ -22,14 +22,29 @@ public class Time {
         previousNano = currentNano;
     }
 
+    /**
+     * Returns the framerate in frames per second.
+     * 
+     * @return The framerate
+     */
     public double getFramerate() {
         return 1 / deltaSmooth;
     }
 
+    /**
+     * Returns the time between frames in seconds.
+     * 
+     * @return The delta time
+     */
     public double getDelta() {
         return delta;
     }
 
+    /**
+     * Returns the amount of time simce the start of the game.
+     * 
+     * @return The elapsed time
+     */
     public double getElapsed() {
         return elapsed;
     }
