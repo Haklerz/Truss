@@ -13,21 +13,21 @@ import javax.swing.JFrame;
 public class Runner implements Runnable {
 
     private final Game game;
-    private final Config settings;
+    private final Configuration configuration;
     private final Canvas canvas;
     private final JFrame frame;
 
     public Runner(Game game) {
         this.game = game;
 
-        this.settings = new Config();
-        game.setup(settings);
+        this.configuration = new Configuration();
+        game.setup(configuration);
 
         this.canvas = new Canvas();
         canvas.setIgnoreRepaint(true);
-        canvas.setSize(settings.getWidth(), settings.getHeight());
+        canvas.setSize(configuration.getWidth(), configuration.getHeight());
 
-        this.frame = new JFrame(settings.getTitle());
+        this.frame = new JFrame(configuration.getTitle());
         frame.setIgnoreRepaint(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -44,23 +44,24 @@ public class Runner implements Runnable {
 
         GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice().getDefaultConfiguration();
-        BufferedImage backBuffer = graphicsConfiguration.createCompatibleImage(settings.getWidth(), settings.getHeight());
+        BufferedImage backBuffer = graphicsConfiguration.createCompatibleImage(configuration.getWidth(),
+                configuration.getHeight());
 
         Graphics2D graphics = backBuffer.createGraphics();
         graphics.setColor(Color.BLACK);
-        graphics.fillRect(0, 0, settings.getWidth(), settings.getHeight());
+        graphics.fillRect(0, 0, configuration.getWidth(), configuration.getHeight());
         graphics.dispose();
-        
+
         Time time = new Time(System.nanoTime());
         Renderer renderer = new Renderer();
 
         while (true) {
             time.update(System.nanoTime());
-            game.update(settings, time);
+            game.update(time);
 
             graphics = backBuffer.createGraphics();
             renderer.setGraphics(graphics);
-            game.draw(settings, renderer);
+            game.draw(renderer);
             graphics.dispose();
 
             graphics = (Graphics2D) buffer.getDrawGraphics();

@@ -15,7 +15,7 @@ public class NBody implements Game {
     }
 
     @Override
-    public void setup(Config settings) {
+    public void setup(Configuration settings) {
         settings.setTitle("NBody Simulation");
         settings.setResolution(1280, 720);
 
@@ -28,7 +28,7 @@ public class NBody implements Game {
     }
 
     @Override
-    public void update(Config config, Time time) {
+    public void update(Configuration config, Time time) {
         Body a, b;
         for (int i = 0; i < bodies.size(); i++) {
             a = bodies.get(i);
@@ -53,7 +53,7 @@ public class NBody implements Game {
     }
 
     @Override
-    public void draw(Config config, Renderer renderer) {
+    public void draw(Configuration config, Renderer renderer) {
         bodies.forEach(body -> body.draw(renderer));
     }
 }
