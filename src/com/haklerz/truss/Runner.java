@@ -1,7 +1,6 @@
 package com.haklerz.truss;
 
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -13,21 +12,21 @@ import javax.swing.JFrame;
 public class Runner implements Runnable {
 
     private final Game game;
-    private final Configuration configuration;
+    private final Window window;
     private final Canvas canvas;
     private final JFrame frame;
 
     public Runner(Game game) {
         this.game = game;
 
-        this.configuration = new Configuration();
-        game.setup(configuration);
+        this.window = new Window();
+        game.init(window);
 
         this.canvas = new Canvas();
         canvas.setIgnoreRepaint(true);
-        canvas.setSize(configuration.getWidth(), configuration.getHeight());
+        canvas.setSize(window.getWidth(), window.getHeight());
 
-        this.frame = new JFrame(configuration.getTitle());
+        this.frame = new JFrame(window.getTitle());
         frame.setIgnoreRepaint(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -44,24 +43,20 @@ public class Runner implements Runnable {
 
         GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice().getDefaultConfiguration();
-        BufferedImage backBuffer = graphicsConfiguration.createCompatibleImage(configuration.getWidth(),
-                configuration.getHeight());
+        BufferedImage backBuffer = graphicsConfiguration.createCompatibleImage(window.getWidth(),
+                window.getHeight());
 
         Graphics2D graphics = backBuffer.createGraphics();
-        graphics.setColor(Color.BLACK);
-        graphics.fillRect(0, 0, configuration.getWidth(), configuration.getHeight());
+        Draw draw = new Draw(window, graphics);
         graphics.dispose();
 
         Time time = new Time(System.nanoTime());
-        Renderer renderer = new Renderer();
-
         while (true) {
             time.update(System.nanoTime());
-            game.update(time);
 
             graphics = backBuffer.createGraphics();
-            renderer.setGraphics(graphics);
-            game.draw(renderer);
+            draw.setGraphics(graphics);
+            game.loop(time, draw);
             graphics.dispose();
 
             graphics = (Graphics2D) buffer.getDrawGraphics();
