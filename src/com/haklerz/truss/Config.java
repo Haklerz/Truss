@@ -1,6 +1,6 @@
 package com.haklerz.truss;
 
-public class Settings {
+public class Config {
     private int width, height;
     private String title;
 
