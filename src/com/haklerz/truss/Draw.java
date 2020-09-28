@@ -7,7 +7,7 @@ public class Draw {
     private Graphics2D graphics;
     private final int WIDTH, HEIGHT;
 
-    public Draw(Window window, Graphics2D graphics) {
+    public Draw(Setup window, Graphics2D graphics) {
         setGraphics(graphics);
         clear();
         this.WIDTH = window.getWidth();

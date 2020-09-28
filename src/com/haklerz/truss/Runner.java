@@ -12,14 +12,14 @@ import javax.swing.JFrame;
 public class Runner implements Runnable {
 
     private final Game game;
-    private final Window window;
+    private final Setup window;
     private final Canvas canvas;
     private final JFrame frame;
 
     public Runner(Game game) {
         this.game = game;
 
-        this.window = new Window();
+        this.window = new Setup();
         game.init(window);
 
         this.canvas = new Canvas();
