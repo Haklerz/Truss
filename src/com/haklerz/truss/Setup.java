@@ -1,6 +1,6 @@
 package com.haklerz.truss;
 
-public class Window {
+public class Setup {
     private int width, height;
     private String title;
 
