@@ -1,33 +1,52 @@
 package com.haklerz.truss;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class Renderer {
-    private Graphics2D graphics;
+    private final int[] pixels;
+    private final int WIDTH;
+    private final int HEIGHT;
 
-    void setGraphics(Graphics2D graphics) {
-        this.graphics = graphics;
+    private int currentColor;
+
+    Renderer(int[] pixels, int width, int height) {
+        this.pixels = pixels;
+        this.WIDTH = width;
+        this.HEIGHT = height;
     }
 
-    public void setColor(double r, double g, double b) {
-        graphics.setColor(new Color((float) r, (float) g, (float) b));
+    private static int clamp(int x, int min, int max) {
+        return (x < min) ? min : (x > max) ? max : x;
     }
 
-    public void rect(double x, double y, double width, double height) {
-        graphics.drawRect(round(x), round(y), round(width), round(height));
+    public int getWidth() {
+        return WIDTH;
     }
 
-    public void circle(double x, double y, double r) {
-        int d = round(r * 2);
-        graphics.drawOval(round(x - r), round(y - r), d, d);
+    public int getHeight() {
+        return HEIGHT;
     }
 
-    public void line(double x0, double y0, double x1, double y1) {
-        graphics.drawLine(round(x0), round(y0), round(x1), round(y1));
+    public void setColor(int r, int g, int b) {
+        currentColor = clamp(r, 0, 255) << 16 | clamp(g, 0, 255) << 8 | clamp(b, 0, 255);
     }
 
-    private static int round(double x) {
-        return (x >= 0) ? (int) (x + 0.5) : (int) (x - 0.5);
+    public void setPixel(int x, int y) {
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+            return;
+
+        pixels[x + y * WIDTH] = currentColor;
+    }
+
+    public void fill(int x, int y, int width, int height) {
+        // TODO: More bounds checking
+
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                setPixel(x + i, y + j);
+
+    }
+
+    public void clear() {
+        for (int i = 0; i < WIDTH * HEIGHT; i++)
+            pixels[i] = 0;
     }
 }
