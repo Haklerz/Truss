@@ -20,18 +20,23 @@ import javax.swing.JFrame;
 
 public class Window implements Runnable {
 
+    private final int WIDTH;
+    private final int HEIGHT;
+
     private final Game game;
     private final Canvas canvas;
     private final JFrame frame;
-    private final int WIDTH;
-    private final int HEIGHT;
-    private boolean[] keyFrontBuffer = new boolean[65536];
-    private boolean[] keyBackBuffer = new boolean[65536];
-    private int scale = 1;
+
+    private boolean[] isKeyDown = new boolean[1 << 16];
+
+    private boolean[] isButtonDown = new boolean[5];
     private int mouseX;
     private int mouseY;
+    private int mouseWheelPosition;
+
     private int xOffset;
     private int yOffset;
+    private int scalingFactor = 1;
 
     public Window(String title, int width, int height, Game game) {
         this.WIDTH = width;
@@ -44,48 +49,55 @@ public class Window implements Runnable {
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
 
-                int newMouseX = Math.floorDiv(e.getX() - xOffset, scale);
-                int newMouseY = Math.floorDiv(e.getY() - yOffset, scale);
+                int newMouseX = Math.floorDiv(e.getX() - xOffset, scalingFactor);
+                int newMouseY = Math.floorDiv(e.getY() - yOffset, scalingFactor);
 
-                if (newMouseX >= 0 && newMouseX < WIDTH && newMouseY >= 0 && newMouseY < HEIGHT) {
-                    mouseX = newMouseX;
-                    mouseY = newMouseY;
-                    System.out.println("[" + mouseX + ", " + mouseY + "] ");
-                }
+                if (newMouseX == mouseX && newMouseY == mouseY)
+                    return;
 
-                
+                if (newMouseX < 0 || newMouseX >= WIDTH || newMouseY < 0 || newMouseY >= HEIGHT)
+                    return;
+
+                mouseX = newMouseX;
+                mouseY = newMouseY;
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                // TODO Auto-generated method stub
                 super.mousePressed(e);
+
+                isButtonDown[e.getButton() - 1] = true;
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                // TODO Auto-generated method stub
                 super.mouseReleased(e);
+
+                isButtonDown[e.getButton() - 1] = false;
             }
 
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                // TODO Auto-generated method stub
                 super.mouseWheelMoved(e);
+
+                mouseWheelPosition += e.getWheelRotation();
             }
         };
+
         KeyAdapter keyAdapter = new KeyAdapter() {
 
             @Override
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
-                keyBackBuffer[e.getKeyCode()] = true;
+
+                isKeyDown[e.getKeyCode()] = true;
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
-                keyBackBuffer[e.getKeyCode()] = false;
+
+                isKeyDown[e.getKeyCode()] = false;
             }
         };
 
@@ -105,7 +117,6 @@ public class Window implements Runnable {
         frame.add(canvas);
         frame.pack();
         frame.setMinimumSize(frame.getSize());
-        
     }
 
     @Override
@@ -124,16 +135,14 @@ public class Window implements Runnable {
         Renderer renderer = new Renderer(pixels, WIDTH, HEIGHT);
 
         while (true) {
-            keyFrontBuffer = keyBackBuffer.clone();
-
             game.loop(renderer);
 
             Graphics graphics = bufferStrategy.getDrawGraphics();
 
-            scale = max(min(canvas.getWidth() / WIDTH, canvas.getHeight() / HEIGHT), 1);
-            xOffset = (canvas.getWidth() - WIDTH * scale) >> 1;
-            yOffset = (canvas.getHeight() - HEIGHT * scale) >> 1;
-            graphics.drawImage(screen, xOffset, yOffset, WIDTH * scale, HEIGHT * scale, null);
+            scalingFactor = max(min(canvas.getWidth() / WIDTH, canvas.getHeight() / HEIGHT), 1);
+            xOffset = (canvas.getWidth() - WIDTH * scalingFactor) >> 1;
+            yOffset = (canvas.getHeight() - HEIGHT * scalingFactor) >> 1;
+            graphics.drawImage(screen, xOffset, yOffset, WIDTH * scalingFactor, HEIGHT * scalingFactor, null);
 
             graphics.dispose();
             if (!bufferStrategy.contentsLost()) {
