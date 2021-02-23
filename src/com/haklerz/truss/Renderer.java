@@ -4,12 +4,17 @@ public class Renderer {
     private final int[] pixels;
     private final int WIDTH;
     private final int HEIGHT;
-    private int color;
 
-    public Renderer(int[] pixels, int width, int height) {
+    private int currentColor;
+
+    Renderer(int[] pixels, int width, int height) {
         this.pixels = pixels;
         this.WIDTH = width;
         this.HEIGHT = height;
+    }
+
+    private static int clamp(int x, int min, int max) {
+        return (x < min) ? min : (x > max) ? max : x;
     }
 
     public int getWidth() {
@@ -20,51 +25,28 @@ public class Renderer {
         return HEIGHT;
     }
 
-    private static int round(double x) {
-        return x >= 0 ? (int) (x + 0.5) : (int) (x - 0.5);
+    public void setColor(int r, int g, int b) {
+        currentColor = clamp(r, 0, 255) << 16 | clamp(g, 0, 255) << 8 | clamp(b, 0, 255);
     }
 
-    private static int scaledClamp(double x) {
-        int y = round(x * 255);
-        if (y <= 0)
-            return 0;
+    public void setPixel(int x, int y) {
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+            return;
 
-        if (y >= 255)
-            return 255;
-
-        return y;
+        pixels[x + y * WIDTH] = currentColor;
     }
 
-    public void setColor(double r, double g, double b) {
-        color = scaledClamp(r) << 16 | scaledClamp(g) << 8 | scaledClamp(b);
-    }
+    public void fill(int x, int y, int width, int height) {
+        // TODO: More bounds checking
 
-    public void setColor(double v) {
-        int temp = scaledClamp(v);
-        temp |= temp << 8;
-        temp |= temp << 8;
-        color = temp;
-    }
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                setPixel(x + i, y + j);
 
-    public void setPixel(double x, double y) {
-        // TODO: Bounds checking
-
-        pixels[round(x) + round(y) * WIDTH] = color;
-    }
-
-    public void fill(double x, double y, double width, double height) {
-        // TODO: Bounds checking
-
-        for (int i = 0; i < round(width); i++) {
-            for (int j = 0; j < round(height); j++) {
-                pixels[round(x) + i + (round(y) + j) * WIDTH] = color;
-            }
-        }
     }
 
     public void clear() {
-        for (int i = 0; i < WIDTH * HEIGHT; i++) {
+        for (int i = 0; i < WIDTH * HEIGHT; i++)
             pixels[i] = 0;
-        }
     }
 }
