@@ -5,5 +5,5 @@ package com.haklerz.truss;
  */
 public interface Game {
 
-    public abstract void loop(Renderer renderer);
+    public abstract void loop(Renderer renderer, Input input);
 }
