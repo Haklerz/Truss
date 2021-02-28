@@ -49,4 +49,28 @@ public class Renderer {
         for (int i = 0; i < WIDTH * HEIGHT; i++)
             pixels[i] = 0;
     }
+
+    /**
+     * Yeet
+     */
+    public void fade() {
+        for (int i = 0; i < pixels.length; i++) {
+            int pixel = pixels[i];
+            int r = (pixel & 0xFF0000) >> 16;
+            int g = (pixel & 0xFF00) >> 8;
+            int b = pixel & 0xFF;
+
+            if (r > 0)
+                r--;
+
+            if (g > 0)
+                g--;
+
+            if (b > 0)
+                b--;
+
+            pixel = r << 16 | g << 8 | b;
+            pixels[i] = pixel;
+        }
+    }
 }
