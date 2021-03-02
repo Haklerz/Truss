@@ -73,4 +73,66 @@ public class Renderer {
             pixels[i] = pixel;
         }
     }
+    /*
+    public void line(int x0, int y0, int x1, int y1) {
+        double deltaX = x1 - x0;
+        double deltaY = y1 - y0;
+        double deltaError = Math.abs(deltaY / deltaX);
+        double error = 0;
+        int y = y0;
+        for (int x = x0; x < x1; x++) {
+            setPixel(x, y);
+            error += deltaError;
+            if (error >= 0.5) {
+                y += Math.signum(deltaY);
+                error -= 1;
+            }
+        }
+    }
+    */
+
+    public void line(int x0, int y0, int x1, int y1) {
+        int dx = Math.abs(x1 - x0);
+        int sx = x0 < x1 ? 1 : -1;
+        int dy = -Math.abs(y1 - y0);
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx + dy;
+        while (true) {
+            setPixel(x0, y0);
+            if (x0 == x1 && y0 == y1) 
+                break;
+            
+            int e2 = 2 * err;
+            if (e2 >= dy) {
+                err += dy;
+                x0 += sx;
+            }
+            if (e2 <= dx) {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    /*
+    plotLine(int x0, int y0, int x1, int y1)
+    dx =  abs(x1-x0);
+    sx = x0<x1 ? 1 : -1;
+    dy = -abs(y1-y0);
+    sy = y0<y1 ? 1 : -1;
+    err = dx+dy;   
+    while (true)   
+        plot(x0, y0);
+        if (x0 == x1 && y0 == y1) break;
+        e2 = 2*err;
+        if (e2 >= dy)  
+            err += dy;
+            x0 += sx;
+        end if
+        if (e2 <= dx) 
+            err += dx;
+            y0 += sy;
+        end if
+    end while
+    */
 }

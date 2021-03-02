@@ -25,7 +25,7 @@ public class RocketGame implements Game {
 
     @Override
     public void loop(Renderer renderer, Input input) {
-        renderer.fade();
+        renderer.clear();
         rocket.update(renderer, input);
         rocket.draw(renderer);
 
@@ -71,7 +71,6 @@ public class RocketGame implements Game {
             px += vx;
             py += vy;
 
-
             if (px < 0) {
                 px = renderer.getWidth() - 1;
             }
@@ -90,16 +89,32 @@ public class RocketGame implements Game {
         }
 
         public void draw(Renderer renderer) {
-            renderer.setColor(0, 255, 0);
 
-            renderer.setPixel((int) (px + 5 * Math.cos(a)), (int) (py + 5 * Math.sin(a)));
-            renderer.setPixel((int) (px + 5 * Math.cos(a + 2.6)), (int) (py + 5 * Math.sin(a + 2.6)));
-            renderer.setPixel((int) (px + 5 * Math.cos(a - 2.6)), (int) (py + 5 * Math.sin(a - 2.6)));
+            double size = 10;
+
+            double frontX = size * Math.cos(a);
+            double frontY = size * Math.sin(a);
+
+            double leftX = size * 0.8 * Math.cos(a - Math.PI * 0.7);
+            double leftY = size * 0.8 * Math.sin(a - Math.PI * 0.7);
+
+            double rightX = size * 0.8 * Math.cos(a + Math.PI * 0.7);
+            double rightY = size * 0.8 * Math.sin(a + Math.PI * 0.7);
+
+            renderer.setColor(255, 0, 255);
+            renderer.line(round(px + frontX), round(py + frontY), round(px + rightX), round(py + rightY));
+            renderer.line(round(px + frontX), round(py + frontY), round(px + leftX), round(py + leftY));
+            renderer.line(round(px + rightX * 0.7), round(py + rightY * 0.7), round(px + leftX * 0.7), round(py + leftY * 0.7));
         }
+
+    }
+
+    private static int round(double x) {
+        return (x >= 0) ? (int) (x + 0.5d) : (int) (x - 0.5d);
     }
 
     private class Shot {
-    
+
         private double px, py, vx, vy;
 
         public Shot(double x, double y, double a) {
