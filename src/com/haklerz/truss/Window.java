@@ -147,11 +147,11 @@ public class Window implements Runnable {
         canvas.createBufferStrategy(2);
         BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 
-        Renderer renderer = new Renderer(pixels, WIDTH, HEIGHT);
+        Draw draw = new Draw(pixels, WIDTH, HEIGHT);
 
         while (true) {
 
-            game.loop(renderer, input);
+            game.loop(draw, input);
 
             Graphics graphics = bufferStrategy.getDrawGraphics();
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.haklerz.truss.Game;
 import com.haklerz.truss.Input;
-import com.haklerz.truss.Renderer;
+import com.haklerz.truss.Draw;
 import com.haklerz.truss.Window;
 
 public class RocketGame implements Game {
@@ -24,8 +24,9 @@ public class RocketGame implements Game {
     }
 
     @Override
-    public void loop(Renderer renderer, Input input) {
-        renderer.clear();
+    public void loop(Draw renderer, Input input) {
+        renderer.setColor(0, 0, 0);
+        renderer.fill();
         rocket.update(renderer, input);
         rocket.draw(renderer);
 
@@ -49,7 +50,7 @@ public class RocketGame implements Game {
             this.py = y;
         }
 
-        public void update(Renderer renderer, Input input) {
+        public void update(Draw renderer, Input input) {
             if (input.isKeyboardKeyDown(KeyEvent.VK_UP)) {
                 vx += Math.cos(a) * 0.0002;
                 vy += Math.sin(a) * 0.0002;
@@ -72,23 +73,23 @@ public class RocketGame implements Game {
             py += vy;
 
             if (px < 0) {
-                px = renderer.getWidth() - 1;
+                px = renderer.WIDTH - 1;
             }
 
-            if (px >= renderer.getWidth()) {
+            if (px >= renderer.WIDTH) {
                 px = 0;
             }
 
             if (py < 0) {
-                py = renderer.getHeight() - 1;
+                py = renderer.HEIGHT - 1;
             }
 
-            if (py >= renderer.getHeight()) {
+            if (py >= renderer.HEIGHT) {
                 py = 0;
             }
         }
 
-        public void draw(Renderer renderer) {
+        public void draw(Draw renderer) {
 
             double size = 10;
 
@@ -105,6 +106,9 @@ public class RocketGame implements Game {
             renderer.line(round(px + frontX), round(py + frontY), round(px + rightX), round(py + rightY));
             renderer.line(round(px + frontX), round(py + frontY), round(px + leftX), round(py + leftY));
             renderer.line(round(px + rightX * 0.7), round(py + rightY * 0.7), round(px + leftX * 0.7), round(py + leftY * 0.7));
+
+            renderer.setColor(0, 255, 255);
+            renderer.circle(round(px), round(py), round(size * 1.3));
         }
 
     }
@@ -124,14 +128,14 @@ public class RocketGame implements Game {
             this.vy = Math.sin(a);
         }
 
-        public void update(Renderer renderer) {
+        public void update(Draw renderer) {
             px += vx;
             py += vy;
         }
 
-        public void draw(Renderer renderer) {
+        public void draw(Draw renderer) {
             renderer.setColor(255, 0, 0);
-            renderer.setPixel((int) px, (int) py);
+            renderer.fill((int) px, (int) py);
         }
     }
 }
