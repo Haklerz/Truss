@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.haklerz.truss.Game;
 import com.haklerz.truss.Input;
-import com.haklerz.truss.Draw;
+import com.haklerz.truss.Renderer;
 import com.haklerz.truss.Window;
 
 public class RocketGame implements Game {
@@ -24,7 +24,7 @@ public class RocketGame implements Game {
     }
 
     @Override
-    public void loop(Draw renderer, Input input) {
+    public void loop(Renderer renderer, Input input) {
         renderer.setColor(0, 0, 0);
         renderer.fill();
         rocket.update(renderer, input);
@@ -50,7 +50,7 @@ public class RocketGame implements Game {
             this.py = y;
         }
 
-        public void update(Draw renderer, Input input) {
+        public void update(Renderer renderer, Input input) {
             if (input.isKeyboardKeyDown(KeyEvent.VK_UP)) {
                 vx += Math.cos(a) * 0.0002;
                 vy += Math.sin(a) * 0.0002;
@@ -89,7 +89,7 @@ public class RocketGame implements Game {
             }
         }
 
-        public void draw(Draw renderer) {
+        public void draw(Renderer renderer) {
 
             double size = 10;
 
@@ -128,12 +128,12 @@ public class RocketGame implements Game {
             this.vy = Math.sin(a);
         }
 
-        public void update(Draw renderer) {
+        public void update(Renderer renderer) {
             px += vx;
             py += vy;
         }
 
-        public void draw(Draw renderer) {
+        public void draw(Renderer renderer) {
             renderer.setColor(255, 0, 0);
             renderer.fill((int) px, (int) py);
         }

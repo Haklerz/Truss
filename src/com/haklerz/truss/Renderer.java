@@ -1,6 +1,6 @@
 package com.haklerz.truss;
 
-public class Draw {
+public class Renderer {
     private final int[] pixels;
     public final int WIDTH;
     public final int HEIGHT;
@@ -14,7 +14,7 @@ public class Draw {
      * @param width
      * @param height
      */
-    Draw(int[] pixels, int width, int height) {
+    Renderer(int[] pixels, int width, int height) {
         this.pixels = pixels;
         this.WIDTH = width;
         this.HEIGHT = height;

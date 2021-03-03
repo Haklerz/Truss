@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 
 import com.haklerz.truss.Game;
 import com.haklerz.truss.Input;
-import com.haklerz.truss.Draw;
+import com.haklerz.truss.Renderer;
 import com.haklerz.truss.Window;
 
 public class TestGame implements Game {
@@ -23,7 +23,7 @@ public class TestGame implements Game {
     }
 
     @Override
-    public void loop(Draw renderer, Input input) {
+    public void loop(Renderer renderer, Input input) {
         if (System.nanoTime() - startTime > 1000000000 / 4) {
             System.out.println("fps: " + frameCounter * 4);
             frameCounter = 0;
