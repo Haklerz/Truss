@@ -117,6 +117,19 @@ public class Vec {
     }
 
     /**
+     * Clips this vector to the magnitude m if it is longer.
+     * 
+     * @param m the magnitude m
+     * @return this vector after clipping
+     */
+    public Vec clip(double m) {
+        if (magSq() > m * m)
+            normal(m);
+
+        return this;
+    }
+
+    /**
      * Returns the squared magnitude of this vector.
      * 
      * @return the squared magnitude
@@ -224,6 +237,17 @@ public class Vec {
      */
     public static Vec normal(Vec v, double m) {
         return new Vec(v).normal(m);
+    }
+
+    /**
+     * Returns the resulting vector from clipping the vector v to the magnitude m.
+     * 
+     * @param v the vector v
+     * @param m the magnitude m
+     * @return the resulting vector
+     */
+    public static Vec clip(Vec v, double m) {
+        return new Vec(v).clip(m);
     }
 
     /**
