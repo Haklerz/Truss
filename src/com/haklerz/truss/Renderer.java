@@ -20,6 +20,10 @@ public class Renderer {
         this.HEIGHT = height;
     }
 
+    private static int round(double x) {
+        return x >= 0 ? (int) (x + 0.5) : (int) (x - 0.5);
+    }
+
     /**
      * Clamps a value x to a range [min, max]
      * 
@@ -111,6 +115,10 @@ public class Renderer {
                 y0 += sy;
             }
         }
+    }
+
+    public void circle(double x, double y, double r) {
+        circle(round(x), round(y), round(r));
     }
 
     public void circle(int x, int y, int r) {
