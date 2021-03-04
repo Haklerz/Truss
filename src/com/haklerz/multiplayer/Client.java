@@ -23,7 +23,7 @@ public class Client implements Game {
     public Client() {
         this.players = new Players();
         this.id = 0;
-        players.addPlayer(new Player(100, 100, 0));
+        players.spawnPlayer(new Player(100, 100, 0));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Client implements Game {
     }
 
     private void updatePlayer(Player player, Input input, Time time) {
-        if (player.ID == id) {
+        if (player.playerID == id) {
             player.vel.x = 0;
             player.vel.y = 0;
             if (input.isKeyboardKeyDown(KeyEvent.VK_W))
