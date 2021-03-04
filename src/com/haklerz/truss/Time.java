@@ -7,11 +7,8 @@ public class Time {
     private double delta;
     private double elapsed;
 
-    private final double minDelta;
-
-    public Time(double minDelta) {
+    public Time() {
         this.previousNanos = System.nanoTime();
-        this.minDelta = minDelta;
     }
 
     public void step() {

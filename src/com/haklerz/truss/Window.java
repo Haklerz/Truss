@@ -148,7 +148,7 @@ public class Window implements Runnable {
         BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 
         Renderer renderer = new Renderer(pixels, WIDTH, HEIGHT);
-        Time time = new Time(1/5);
+        Time time = new Time();
 
         while (true) {
             time.step();
