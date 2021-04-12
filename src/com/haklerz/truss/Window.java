@@ -2,96 +2,80 @@ package com.haklerz.truss;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.awt.Graphics2D;
 
 import javax.swing.JFrame;
 
-public class Window implements Runnable {
-    private final GraphicsConfiguration configuration;
+/*
+Create a frame
+Create a canvas
+Add the frame to the canvas
+Create a screen buffer from compatibleImage
+Create a buffer strategy on the canvas
+Create a Graphics2D from the screen buffer
 
-    private JFrame frame;
-    private Canvas canvas;
-    private BufferedImage screen;
+
+loop:
+	Let game update
+	Let game draw using screen buffer's Graphics2D
+	
+	Create a Graphics2D from the canvas's buffer strategy
+	Draw screen buffer
+	Dispose of Graphics2D
+	Show the buffer strategy
+	Sync
+
+Dispose of Frame
+
+
+
+-More optimizations-
+Enable hardware acceleration  System.setProperty("sun.java2d.opengl", "true");
+
+Manage your own VolatileImage
+
+Convert loaded textures to compatible buffered image
+
+https://docs.oracle.com/javase/7/docs/api/java/awt/image/VolatileImage.html
+https://stackoverflow.com/questions/1963494/java-2d-game-graphics
+https://stackoverflow.com/questions/4627320/java-hardware-acceleration#13832805
+*/
+
+public class Window implements Runnable {
     private Game game;
+    private JFrame frame;
+    private Renderer renderer;
 
     public Window(Game game, String title, int width, int height) {
-        // Save callback to game
         this.game = game;
 
-        // Get graphics configuration
-        this.configuration = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-                .getDefaultConfiguration();
-
-        // Initialize screen buffer
-        this.screen = getCompatibleImage(width, height);
-
-        // Initialize canvas
-        this.canvas = new Canvas(configuration);
-        canvas.setBackground(Color.decode("0x0A0E14"));
-        canvas.setSize(width, height);
-
-        // Initialize frame
         this.frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setIgnoreRepaint(true);
 
-        // Add canvas to frame
-        frame.add(canvas);
+        this.renderer = new Renderer(width, height);
+        frame.add(renderer.getCanvas());
         frame.pack();
         frame.setMinimumSize(frame.getSize());
+        renderer.initGraphics();
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     @Override
     public void run() {
-        // Make frame visible
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        canvas.createBufferStrategy(2);
-        Graphics2D screenGraphics = (Graphics2D) screen.getGraphics();
-
-        while (canvas.isDisplayable()) {
+        while (frame.isDisplayable()) {
             game.update();
-            game.draw(screenGraphics);
-            updateScreen();
-
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            game.draw(renderer);
+            renderer.flip();
         }
-
         frame.dispose();
-    }
-
-    /**
-     * Draws the screen buffer to the canvas.
-     */
-    private void updateScreen() {
-        // TODO: Optimize and make safe
-
-        BufferStrategy strategy = canvas.getBufferStrategy();
-
-        Graphics2D graphics = (Graphics2D) strategy.getDrawGraphics();
-        graphics.drawImage(screen, 0, 0, screen.getWidth(), screen.getHeight(), null);
-        graphics.dispose();
-
-        strategy.show();
-    }
-
-    /**
-     * Returns a compatible <code>BufferedImage</code>.
-     * 
-     * @param width  The width of the image
-     * @param height The height of the image
-     * @return The <code>BufferedImage</code>
-     */
-    private BufferedImage getCompatibleImage(int width, int height) {
-        return configuration.createCompatibleImage(width, height, Transparency.OPAQUE);
     }
 }
