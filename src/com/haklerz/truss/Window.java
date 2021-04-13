@@ -78,4 +78,34 @@ public class Window implements Runnable {
         }
         frame.dispose();
     }
+
+    public void start() {
+        new Thread(this).start();
+    }
+
+    public static class Builder {
+        private Game game;
+        private String title;
+        private int width, height;
+
+        public Builder setGame(Game game) {
+            this.game = game;
+            return this;
+        }
+
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder setResolution(int width, int height) {
+            this.width = width;
+            this.height = height;
+            return this;
+        }
+    
+        public Window build() {
+            return new Window(game, title, width, height);
+        }
+    }
 }
