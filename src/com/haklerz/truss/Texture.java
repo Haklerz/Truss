@@ -10,15 +10,19 @@ import javax.imageio.ImageIO;
 public class Texture {
     private BufferedImage image;
 
-    public Texture(String path) throws IOException {
-        BufferedImage readImage = ImageIO.read(new File(path));
+    public Texture(String path) {
+        try {
+            BufferedImage readImage = ImageIO.read(new File(path));
 
-        this.image = DefaultGraphicsConfiguration.getInstance()
-            .createCompatibleImage(readImage.getWidth(), readImage.getHeight(), readImage.getTransparency());
+            this.image = DefaultGraphicsConfiguration.getInstance().createCompatibleImage(readImage.getWidth(),
+                    readImage.getHeight(), readImage.getTransparency());
 
-        Graphics2D graphics = image.createGraphics();
-        graphics.drawImage(readImage, 0, 0, null);
-        graphics.dispose();
+            Graphics2D graphics = image.createGraphics();
+            graphics.drawImage(readImage, 0, 0, null);
+            graphics.dispose();
+        } catch (IOException e) {
+            this.image = null;
+        }
     }
 
     BufferedImage getImage() {
