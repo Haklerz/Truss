@@ -10,6 +10,10 @@ public class Chunk {
         tiles = new Tile[SIZE * SIZE];
     }
 
+    public Tile get(int x, int y) {
+        return tiles[x + y * SIZE];
+    }
+
     public static Chunk generate(int seed, int chunkX, int chunkY) {
         Chunk chunk = new Chunk();
 
@@ -21,9 +25,9 @@ public class Chunk {
 
             Tile tile;
             if (v < 0.5) {
-                tile = Tile.WATER;
+                tile = WATER;
             } else {
-                tile = Tile.LAND;
+                tile = LAND;
             }
             
             chunk.tiles[i] = tile;

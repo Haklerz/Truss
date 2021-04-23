@@ -4,7 +4,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 
 public class DefaultGraphicsConfiguration {
-    private static GraphicsConfiguration configuration;
+    private static GraphicsConfiguration configuration = null;
 
     private DefaultGraphicsConfiguration() {
     }
