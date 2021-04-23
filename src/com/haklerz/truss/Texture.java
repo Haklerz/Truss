@@ -28,12 +28,17 @@ public final class Texture {
         // TODO: Assign empty compatible image
     }
 
+    private static int round(float x) {
+        return x >= 0 ? (int) (x + 0.5f) : (int) (x - 0.5f);
+    }
+
     protected Image getImage() {
         return image;
     }
 
     public void draw(Texture texture, float x, float y) {
         Graphics2D graphics = image.createGraphics();
-        graphics.drawImage(texture.getImage(), x, y, null);
+        graphics.drawImage(texture.getImage(), round(x), round(y), null);
+        graphics.dispose();
     }
 }
