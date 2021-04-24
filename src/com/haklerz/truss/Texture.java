@@ -1,44 +1,26 @@
 package com.haklerz.truss;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
-import java.awt.Graphics2D;
 
 import javax.imageio.ImageIO;
 
-public final class Texture {
+public interface Texture {
+    public static final GraphicsConfiguration defaultGraphicsConfiguration = GraphicsEnvironment
+            .getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
-    private BufferedImage image;
+    public void draw(Texture texture, float x, float y);
 
-    public Texture(String path) {
-        try {
-            image = ImageIO.read(new File(path));
+    public void clear();
 
-            // TODO: Create compatible image
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void color(float r, float g, float b);
 
-            // TODO: Gracefully handle exception
-        }
+    public void rect(float x, float y, float width, float height);
+
+    public static Texture load(String path) throws IOException {
+        return new BufferedTexture(ImageIO.read(new File(path)));
     }
 
-    public Texture() {
-        // TODO: Assign empty compatible image
-    }
-
-    private static int round(float x) {
-        return x >= 0 ? (int) (x + 0.5f) : (int) (x - 0.5f);
-    }
-
-    protected Image getImage() {
-        return image;
-    }
-
-    public void draw(Texture texture, float x, float y) {
-        Graphics2D graphics = image.createGraphics();
-        graphics.drawImage(texture.getImage(), round(x), round(y), null);
-        graphics.dispose();
-    }
 }
